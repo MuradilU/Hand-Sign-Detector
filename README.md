@@ -17,5 +17,6 @@ python HandSignDetector.py
 
 ## References
 1. ChinHuan/finger-detection: https://github.com/ChinHuan/finger-detection/blob/master/README.md
+2. lzane/Fingers-Detection-using-OpenCV-and-Python: https://github.com/lzane/Fingers-Detection-using-OpenCV-and-Python
 2. Opencv python hand gesture recognition: http://creat-tabu.blogspot.com/2013/08/opencv-python-hand-gesture-recognition.html
 3. Image Thresholding: https://docs.opencv.org/3.4.0/d7/d4d/tutorial_py_thresholding.html
