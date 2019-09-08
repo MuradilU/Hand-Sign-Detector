@@ -1,14 +1,8 @@
 # Hand Sign Detector using Binary Thresholding and a Convolutional Neural Network
 
-![alt text](./test_pictures/zero.png)
-![alt text](./test_pictures/one.png)
-![alt text](./test_pictures/two.png)
-![alt text](./test_pictures/three.png)
-![alt text](./test_pictures/four.png)
-![alt text](./test_pictures/five.png)
-![alt text](./test_pictures/ok.png)
-![alt text](./test_pictures/up.png)
-![alt text](./test_pictures/down.png)
+| Zero | One | Two | Three | Four | Five | Ok | Up | Down |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ![zero](./test_pictures/zero.png) | ![one](./test_pictures/one.png) | ![two](./test_pictures/two.png) | ![three](./test_pictures/three.png) | ![four](./test_pictures/four.png) | ![five](./test_pictures/five.png) | ![ok](./test_pictures/ok.png) | ![up](./test_pictures/up.png) | ![down](./test_pictures/down.png) |
 
 ## References
 1. ChinHuan/finger-detection: https://github.com/ChinHuan/finger-detection/blob/master/README.md
