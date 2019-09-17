@@ -23,7 +23,7 @@ class HandSignDetector:
 		self.currentClassCount = 0
 		self.buildDataset = False
 
-		self.model = load_model("C:/Computer Vision/hand_detection_model_2.h5")
+		self.model = load_model("C:/Computer Vision/hand_detection_model_3.h5")
 
 	def drawROI(self, frame):
 		# Draws rectangular roi in the frame
@@ -45,22 +45,6 @@ class HandSignDetector:
 		kernel = np.ones((5, 5), np.uint8)
 		thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
 		return thresh
-
-	def findContours(self, frame, thresh):
-		maxArea = -1
-		contours, heirarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-		for i in range(len(contours)):
-			cont = contours[i]
-			area = cv2.contourArea(cont)
-			if (area > maxArea):
-				maxArea = area
-				ci = i
-		res = contours[ci]
-		hull = cv2.convexHull(res)
-		drawing = np.zeros(frame.shape, np.uint8)
-		cv2.drawContours(drawing, [res], 0, (0, 255, 0), 2)
-		cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 3)
-		cv2.imshow('output', drawing)
 
 	def showPrediction(self, frame, prediction):
 		predictionString = str(prediction)
@@ -99,11 +83,10 @@ class HandSignDetector:
 			cv2.imshow('frame', frame)				# Show frame
 			cv2.imshow('thresh', thresh)			# Show cut out of the region of interest
 
-			if self.contour:
-				self.findContours(frame, thresh)
-
 			cnnInput = cv2.resize(thresh, (28, 28))	# Resizing ROI to 28*28 pixels to feed into neural network
 
+			## Save a 28*28 png image in it's respective class folder
+			## Else, predict and print prediction
 			if self.buildDataset:
 				path = "C:/Computer Vision/dataset/{0}/{1}/{1}_{2}.png".format(self.datasetCategory, self.currentClass, self.currentClassCount)
 				cv2.imwrite(path, cnnInput)
