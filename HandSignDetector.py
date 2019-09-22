@@ -3,16 +3,16 @@ import numpy as np
 import os
 from keras.models import load_model
 
-cap_region_x_begin=0.5
-cap_region_y_end=0.8
+roi_x=0.5
+roi_y=0.8
 contour = False
 
 class HandSignDetector:
 
 	def __init__(self):
 		# Dimensions for roi
-		self.cap_region_x_begin = 0.5
-		self.cap_region_y_end = 0.8
+		self.roi_x = 0.5
+		self.roi_y = 0.8
 		# Flag for finding contours
 		self.contour = False
 		# Threshold value for image thresholding
@@ -27,12 +27,12 @@ class HandSignDetector:
 
 	def drawROI(self, frame):
 		# Draws rectangular roi in the frame
-		return cv2.rectangle(frame, (int(cap_region_x_begin * frame.shape[1]), 0),
-				(frame.shape[1], int(cap_region_y_end * frame.shape[0])), (255, 0, 0), 2)
+		return cv2.rectangle(frame, (int(roi_x * frame.shape[1]), 0),
+				(frame.shape[1], int(roi_y * frame.shape[0])), (255, 0, 0), 2)
 
 	def cutROI(self, frame, thresh):
 		# Cut the roi out of the frame
-		return thresh[0:int(cap_region_y_end * frame.shape[0]),int(cap_region_x_begin * frame.shape[1]):frame.shape[1]]
+		return thresh[0:int(roi_y * frame.shape[0]),int(roi_x * frame.shape[1]):frame.shape[1]]
 
 	def threshold(self, frame):
 		# 1. Convert to grayscale
@@ -46,25 +46,12 @@ class HandSignDetector:
 		thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
 		return thresh
 
-	def findContours(self, frame, thresh):
-		maxArea = -1
-		contours, heirarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-		for i in range(len(contours)):
-			cont = contours[i]
-			area = cv2.contourArea(cont)
-			if (area > maxArea):
-				maxArea = area
-				ci = i
-		res = contours[ci]
-		hull = cv2.convexHull(res)
-		drawing = np.zeros(frame.shape, np.uint8)
-		cv2.drawContours(drawing, [res], 0, (0, 255, 0), 2)
-		cv2.drawContours(drawing, [hull], 0, (0, 0, 255), 3)
-		cv2.imshow('output', drawing)
-
 	def showPrediction(self, frame, prediction):
+		## Function to place prediction text on main video
+
 		predictionString = str(prediction)
 
+		# Convert prediction class to corresponding string
 		if predictionString == "6":
 			predictionString = "ok"
 		elif predictionString == "7":
@@ -77,6 +64,8 @@ class HandSignDetector:
 		cv2.imshow("frame", frame)
 
 	def selectClass(self, currentClass):
+		# Save png training or testing data in specified folder
+
 		self.currentClass = currentClass
 		path = "C:/Computer Vision/dataset/%s/%s" % (self.datasetCategory, self.currentClass)
 		if not os.path.exists(path):
@@ -104,6 +93,8 @@ class HandSignDetector:
 
 			cnnInput = cv2.resize(thresh, (28, 28))	# Resizing ROI to 28*28 pixels to feed into neural network
 
+			# If in dataset mode, start saving frames in specified folder
+			# Else predict 
 			if self.buildDataset:
 				path = "C:/Computer Vision/dataset/{0}/{1}/{1}_{2}.png".format(self.datasetCategory, self.currentClass, self.currentClassCount)
 				cv2.imwrite(path, cnnInput)
@@ -117,6 +108,7 @@ class HandSignDetector:
 				frame = self.showPrediction(frame, prediction)
 				print(prediction)
 
+			# Keyboard shortcuts
 			key = cv2.waitKey(30) & 0xff
 			if key == 27:
 				capture.release()
